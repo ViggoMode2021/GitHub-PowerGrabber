@@ -1,9 +1,4 @@
-<#
-Invoke-WebRequest 'https://github.com/ViggoMode2021/PowerShellScripts/archive/refs/heads/main.zip' -OutFile .\PowerShellScripts.zip
-Expand-Archive .\PowerShellScripts.zip .\
-Rename-Item .\PowerShellScripts-main .\PowerShellScripts
-Remove-Item .\PowerShellScripts.zip
-#>
+## GitHub PowerGrabber
 
 # https://4sysops.com/archives/powershell-invoke-webrequest-parse-and-scrape-a-web-page/
 
@@ -11,7 +6,16 @@ Remove-Item .\PowerShellScripts.zip
 
 # https://blog.ironmansoftware.com/daily-powershell/powershell-download-github/
 
+$ErrorActionPreference = 'Stop'
+
 $DesktopPath = [Environment]::GetFolderPath("Desktop")
+
+Write-Host "###################################################################################################################" -ForegroundColor "Cyan"
+
+Write-Host "Welcome to GitHub-PowerGrabber! This script will download zip folders of all repositories associated with a requested GitHub page.
+It is written in 100% PowerShell and does not get Git to be installed. Enjoy!" -ForegroundColor "Green"
+
+Write-Host Write-Host "###################################################################################################################" -ForegroundColor "Cyan"
 
 $GitHub_Profile_Name = Read-Host "What is the name of the GitHub profile you would like to use?" # Add do, until
 
@@ -20,17 +24,6 @@ $Last_Letter = $GitHub_Profile_Name -replace '^.*(?=.{1}$)'
 $URL_Suffix = $GitHub_Profile_Name + '?tab=repositories'
 
 $URL = "https://github.com/$URL_Suffix"
-
-$Ping_Test = Test-NetConnection $URL
-
-If(($Ping_Test -ne "") -or ($Ping_Test -ne $null)){
-    Write-Host "$URL found, continuing with repository download."
-    Read-Host "Stop"
-}
-Else{
-    Write-Host "$URL does not exist or is unresponsive."
-    
-}
 
 $Site = Invoke-WebRequest $URL
 
@@ -87,7 +80,6 @@ Invoke-WebRequest $Full_Url -OutFile .\$Repository.zip
 #Remove-Item .\PowerShellScripts.zip
 
 }
-
 
 }
 
