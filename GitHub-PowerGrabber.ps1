@@ -13,15 +13,24 @@ Remove-Item .\PowerShellScripts.zip
 
 $DesktopPath = [Environment]::GetFolderPath("Desktop")
 
-$GitHub_Profile_Name = Read-Host "What is the name of the GitHub profile you would like to use?"
-
-$GitHub_Profile_Name = 'ViggoMode2021'
+$GitHub_Profile_Name = Read-Host "What is the name of the GitHub profile you would like to use?" # Add do, until
 
 $Last_Letter = $GitHub_Profile_Name -replace '^.*(?=.{1}$)'
 
 $URL_Suffix = $GitHub_Profile_Name + '?tab=repositories'
 
 $URL = "https://github.com/$URL_Suffix"
+
+$Ping_Test = Test-NetConnection $URL
+
+If(($Ping_Test -ne "") -or ($Ping_Test -ne $null)){
+    Write-Host "$URL found, continuing with repository download."
+    Read-Host "Stop"
+}
+Else{
+    Write-Host "$URL does not exist or is unresponsive."
+    
+}
 
 $Site = Invoke-WebRequest $URL
 
@@ -49,9 +58,13 @@ $Repository = $Link.Substring($Position+2)
 
 Write-Host "Downloading $Repository"
 
-$GitHub_Repositories_Directory = '$DesktopPath\GitHub-Repositories-$GitHub_Profile_Name'
+$GitHub_Repositories_Directory = "$DesktopPath\GitHub-Repositories-$GitHub_Profile_Name"
 
-if(Test-Path '$GitHub_Repositories_Directory'){
+Write-Host $GitHub_Repositories_Directory -ForegroundColor "Cyan"
+
+if(Test-Path $GitHub_Repositories_Directory){
+
+Set-Location -Path $GitHub_Repositories_Directory
 
 Invoke-WebRequest $Full_Url -OutFile .\$Repository.zip
 #Expand-Archive '$DesktopPath\GitHub-Repositories-For-$GitHub_Profile_Name\$Link.zip' '$DesktopPath\GitHub-Repositories-For-$GitHub_Profile_Name'
@@ -64,13 +77,16 @@ else{
 
 New-Item -Path "$DesktopPath\GitHub-Repositories-$GitHub_Profile_Name" -ItemType Directory
 
+$GitHub_Repositories_Directory = '$DesktopPath\GitHub-Repositories-$GitHub_Profile_Name'
+
+Set-Location -Path $GitHub_Repositories_Directory
+
 Invoke-WebRequest $Full_Url -OutFile .\$Repository.zip
 #Expand-Archive .\PowerShellScripts.zip .\
 #Rename-Item .\PowerShellScripts-main .\PowerShellScripts
 #Remove-Item .\PowerShellScripts.zip
 
 }
-
 
 
 }
