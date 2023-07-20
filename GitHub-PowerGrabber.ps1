@@ -13,13 +13,11 @@ Remove-Item .\PowerShellScripts.zip
 
 $DesktopPath = [Environment]::GetFolderPath("Desktop")
 
-#$GitHub_Profile_Name = Read-Host "What is the name of the GitHub profile you would like to use?"
+$GitHub_Profile_Name = Read-Host "What is the name of the GitHub profile you would like to use?"
 
 $GitHub_Profile_Name = 'ViggoMode2021'
 
 $Last_Letter = $GitHub_Profile_Name -replace '^.*(?=.{1}$)'
-
-$GitHub_Profile_Name_Length = $GitHub_Profile_Name.Length
 
 $URL_Suffix = $GitHub_Profile_Name + '?tab=repositories'
 
@@ -49,13 +47,13 @@ $Position = $Link.IndexOf($Last_Letter)
 
 $Repository = $Link.Substring($Position+2)
 
-Write-Host $Repository
+Write-Host "Downloading $Repository"
 
-if(Test-Path "$DesktopPath\GitHub-Repositories-$GitHub_Profile_Name"){
+$GitHub_Repositories_Directory = '$DesktopPath\GitHub-Repositories-$GitHub_Profile_Name'
 
-#Write-Host "Directory exists on desktop titled 'GitHub-Repositories-$GitHub_Profile_Name'. Downloading repositories to said directory" 
+if(Test-Path '$GitHub_Repositories_Directory'){
 
-#Invoke-WebRequest $Full_Url -OutFile .\$Work.zip 
+Invoke-WebRequest $Full_Url -OutFile .\$Repository.zip
 #Expand-Archive '$DesktopPath\GitHub-Repositories-For-$GitHub_Profile_Name\$Link.zip' '$DesktopPath\GitHub-Repositories-For-$GitHub_Profile_Name'
 #Rename-Item .\PowerShellScripts-main .\PowerShellScripts
 #Remove-Item .\PowerShellScripts.zip
@@ -66,8 +64,8 @@ else{
 
 New-Item -Path "$DesktopPath\GitHub-Repositories-$GitHub_Profile_Name" -ItemType Directory
 
-Invoke-WebRequest 'https://github.com/ViggoMode2021/PowerShellScripts/archive/refs/heads/main.zip' -OutFile .\PowerShellScripts.zip
-Expand-Archive .\PowerShellScripts.zip .\
+Invoke-WebRequest $Full_Url -OutFile .\$Repository.zip
+#Expand-Archive .\PowerShellScripts.zip .\
 #Rename-Item .\PowerShellScripts-main .\PowerShellScripts
 #Remove-Item .\PowerShellScripts.zip
 
