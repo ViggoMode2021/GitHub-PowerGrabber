@@ -1,12 +1,15 @@
-## GitHub PowerGrabber
+<#
+Invoke-WebRequest 'https://github.com/ViggoMode2021/PowerShellScripts/archive/refs/heads/main.zip' -OutFile .\PowerShellScripts.zip
+Expand-Archive .\PowerShellScripts.zip .\
+Rename-Item .\PowerShellScripts-main .\PowerShellScripts
+Remove-Item .\PowerShellScripts.zip
+#>
 
 # https://4sysops.com/archives/powershell-invoke-webrequest-parse-and-scrape-a-web-page/
 
 # https://pipe.how/invoke-webscrape/
 
 # https://blog.ironmansoftware.com/daily-powershell/powershell-download-github/
-
-$ErrorActionPreference = 'Stop'
 
 $DesktopPath = [Environment]::GetFolderPath("Desktop")
 
@@ -32,6 +35,16 @@ $GitHub_Profile_Name_With_Slashes = '/' + $GitHub_Profile_Name + '/'
 $Links = $Site.Links | Select href | Export-CSV .\GitHub-Links.csv
 
 $GitHub_Links = Import-CSV -Path .\GitHub-Links.csv
+
+$Repository_Names = Import-CSV -Path .\GitHub-Links.csv | Where-Object href -match "$GitHub_Profile_Name_With_Slashes" | Out-String
+
+$Repository_Names = $Repository_Names.replace($GitHub_Profile_Name_With_Slashes, "")
+
+$Count_Repositories = Import-CSV -Path .\GitHub-Links.csv | Where-Object href -match "$GitHub_Profile_Name_With_Slashes" | Measure-Object | Select -expand count
+
+Write-Host "Here are the repositories to download: $Repository_Names" -ForegroundColor "Yellow"
+
+Write-Host "There are $Count_Repositories repositories associated with GitHub profile $GitHub_Profile_Name." 
 
 foreach ($Link in $GitHub_Links) {
 
@@ -80,6 +93,7 @@ Invoke-WebRequest $Full_Url -OutFile .\$Repository.zip
 #Remove-Item .\PowerShellScripts.zip
 
 }
+
 
 }
 
